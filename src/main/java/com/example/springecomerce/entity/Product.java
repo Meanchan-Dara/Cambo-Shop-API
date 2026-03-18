@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.sql.ast.tree.expression.JsonTableColumnDefinition;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,10 +26,10 @@ public class Product {
     @Column(scale = 2 ,precision = 10, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "image_url" , nullable = false)
+    @Column(name = "image_url" , nullable = true)
     private String imageUrl;
 
-    @Column(columnDefinition = "Text")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne

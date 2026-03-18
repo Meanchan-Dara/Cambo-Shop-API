@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +22,7 @@ public class Payment {
     private LocalDateTime paymentData;
 
     @Column(nullable = false)
-    private String amount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private String method;
