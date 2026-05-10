@@ -3,6 +3,8 @@ package com.example.springecomerce.controller;
 import com.example.springecomerce.dto.Request.ProductRequestDto;
 import com.example.springecomerce.dto.Response.ProductResponseDto;
 import com.example.springecomerce.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
+@Tag(name="Products",description = "API CRUD Products")
 public class ProductController {
 
     private final ProductService productService;
