@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
@@ -16,19 +18,16 @@ public class CustomUserDetailService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Not found with username: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // ត្រូវប្តូរពី findByUsername មក findByEmail វិញ
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("រកមិនឃើញ User ជាមួយ Email: " + email));
 
-        String[] roles = user.getRoles().stream()
-                .map(Role::getName)
-                .toArray(String[]::new);
-
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(roles)
-                .build();
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(), // ប្រើ email ជា username ក្នុង security context
+                user.getPassword(),
+                new ArrayList<>() // ឬ user.getAuthorities() បើអ្នកមាន Role
+        );
     }
 }
 

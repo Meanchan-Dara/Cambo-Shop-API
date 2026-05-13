@@ -1,19 +1,18 @@
 package com.example.springecomerce.service;
 
-import com.example.springecomerce.Repo.CategoryRepository;
 import com.example.springecomerce.Repo.RoleRepository;
 import com.example.springecomerce.dto.Request.LoginRequest;
 import com.example.springecomerce.dto.Request.UserRequestDto;
 import com.example.springecomerce.entity.Role;
 import com.example.springecomerce.entity.User;
 import com.example.springecomerce.Repo.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,17 +43,19 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Transactional
     public String login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+        } catch (Exception e) {
+            System.out.println("Login Failed: " + e.getMessage());
+            throw new RuntimeException("Invalid Email or Password");
+        }
 
-        User user = userRepository.findByUsername(
-                request.getUsername()
-        ).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         return jwtService.generateToken(user);
     }
