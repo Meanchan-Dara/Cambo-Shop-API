@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,9 +17,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.security.authorization.SingleResultAuthorizationManager.permitAll;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private JwtAuthFilter jwtAuthFilter;
+
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
@@ -27,7 +30,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
@@ -44,14 +46,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
                         .requestMatchers("/auth/**").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/api/category/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/category/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/category/**").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/category/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
 
